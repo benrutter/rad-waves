@@ -1,3 +1,4 @@
+
 const gameState = {
 };
 
@@ -9,7 +10,7 @@ const config = {
 	physics: {
 		default: 'arcade',
 		arcade: {
-			gravity: {y: 1500},
+			//gravity: {y: 1500},
 			enableBody: true,
 		}
 	},

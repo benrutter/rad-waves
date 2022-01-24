@@ -70,7 +70,7 @@ class Surfer {
       1500,
       500,
       this.surferSprite
-    ).setScale(2).setCollideWorldBounds(true);
+    ).setScale(5).setCollideWorldBounds(true);
   }
 
   update() {

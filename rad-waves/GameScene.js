@@ -6,7 +6,7 @@ class GameScene extends Phaser.Scene {
 	preload() {
 		this.load.image('wave', './assets/sprites/wave.png');
 		this.load.image('spray', 'assets/particles/white.png');
-		this.load.spritesheet('surfer', './assets/sprites/surfer.png', { frameWidth: 32, frameHeight: 32 });
+		this.load.spritesheet('surfer', './assets/sprites/surfer.png', { frameWidth: 15, frameHeight: 15 });
 	}
 
 	create() {

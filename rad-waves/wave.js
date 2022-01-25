@@ -37,18 +37,6 @@ class Wave {
       });
     }
 
-    // creating moving particles across wave
-    particles.createEmitter({
-			x: game.config.width * 3.2,
-			y: {min: this.waveHeight, max: this.waveHeight + this.waveDepth},
-			lifespan: 5000,
-			speedX: -this.waveSpeed,
-			speedY: 0,
-			scale: 0.03,
-			gravityY: 0,
-			blendMode: 'ADD',
-		})
-
   }
 
   drawBarrel() {

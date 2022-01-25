@@ -10,6 +10,7 @@ class Surfer {
     this.maxSpinning = 5;
     this.floater = false;
     this.waveHeight = wave.waveHeight;
+    this.waveDepth = wave.waveDepth;
     this.speed = 700;
     this.maxSpeed = 2000;
     this.weight = 15;
@@ -20,6 +21,9 @@ class Surfer {
     this.minSpeed = 100;
     this.waveSpeed = 0.4;
     this.airCounter = 0;
+    this.wipeodut = false;
+    this.celebrateCounter = 0;
+    this.score = 0;
     this.createAnims();
     this.setControls();
   }
@@ -33,6 +37,20 @@ class Surfer {
         repeat: -1,
       });
     }
+    this.context.anims.create({
+      key: 'wipeout',
+      frames: this.context.anims.generateFrameNumbers('surfer', { start: 17, end: 24}),
+      frameRate: 5,
+      repeat: 0,
+    })
+  }
+
+  wipeout() {
+    this.wipedout = true;
+    this.speed = 0;
+    this.sprite.setVelocityX(0);
+    this.sprite.setVelocityY(0);
+    this.sprite.anims.play('wipeout', true);
   }
 
   setControls() {
@@ -48,7 +66,6 @@ class Surfer {
     // jump
     this.context.input.keyboard.on('keydown-A', () => {
       this.state = 'boost';
-      console.log('woo');
 
     });
     this.context.input.keyboard.on('keyup-A', () => {
@@ -65,15 +82,24 @@ class Surfer {
     });
   }
 
+  celebrate(points) {
+    if (this.celebrateCounter > 40) {
+      this.text = this.context.add.text(gameState.player.sprite.body.x, gameState.player.sprite.body.y, 'Rad!', { fontSize: '30px', fill: '#FF7276' }).setOrigin(0.5);
+      this.celebrateCounter = 0;
+      this.score += points;
+    }
+  }
+
   draw() {
     this.sprite = this.context.physics.add.sprite(
       1500,
-      500,
+      this.waveHeight + 100,
       this.surferSprite
     ).setScale(5).setCollideWorldBounds(true);
   }
 
   update() {
+    this.celebrateCounter += 1;
     this.updateRotation();
     if (this.sprite.body.y < this.waveHeight) {
       this.updateMovementOffWave();
@@ -83,7 +109,31 @@ class Surfer {
       this.airCounter = 0;
       this.jumpCounter -= 1;
     }
-    this.updateSprite();
+    // check if on wave tip, and moving down
+    if (this.sprite.body.y > this.waveHeight - 80 & this.sprite.body.y < this.waveHeight & this.sprite.body.velocity.y > 0) {
+      // if rotation isn't facing more or less straight down
+      console.log(this.spin);
+      if (this.spin < 210 | this.spin > 330) {
+        this.wipeout();
+      } else if (this.sprite.body.x < this.waveDepth) {
+        this.wipeout();
+      } else {
+        this.celebrate(100);
+      }
+    }
+    if (!this.wipedout) {
+      this.updateSprite();
+    }
+
+    if (this.celebrateCounter > 30 & this.celebrateCounter < 40) {
+      if (this.text) {
+        this.text.destroy();
+      }
+    }
+    console.log(this.spinning);
+    if (this.spinning > 4 | this.spinning < -4) {
+      this.celebrate(40);
+    }
   }
 
   updateRotation() {

@@ -7,6 +7,7 @@ const config = {
 	width: 1500,
 	height: 700,
 	backgroundColor: "88CEEB",
+	antialias: false,
 	physics: {
 		default: 'arcade',
 		arcade: {

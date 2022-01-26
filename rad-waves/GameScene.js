@@ -15,7 +15,7 @@ class GameScene extends Phaser.Scene {
 
 		this.anims.create({
 			key: 'spin',
-			frames: this.anims.generateFrameNumbers('coin', { start: 0, end: 3}),
+			frames: this.anims.generateFrameNumbers('coin', { start: 0, end: 4}),
 			frameRate: 10,
 			repeat: -1,
 		  })
@@ -67,9 +67,9 @@ class GameScene extends Phaser.Scene {
 	update() {
 
 		if (gameState.player.wipedout) {
-			this.add.text(gameState.player.sprite.body.x, gameState.player.sprite.body.y, `That wave was ${gameState.player.score}% rad \nclick to start again!`, { fontSize: '40px', fill: '#FF7276' }).setOrigin(0.5);
+			this.add.text(gameState.player.sprite.body.x, gameState.player.sprite.body.y, `That wave was ${gameState.player.score}% rad \npress space to start again!`, { fontSize: '40px', fill: '#FF7276' }).setOrigin(0.5);
 
-			this.input.on('pointerup', () => {
+			this.input.keyboard.on('keyup-SPACE', () => {
 				this.scene.restart();
 			});
 

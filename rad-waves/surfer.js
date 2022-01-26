@@ -112,7 +112,6 @@ class Surfer {
     // check if on wave tip, and moving down
     if (this.sprite.body.y > this.waveHeight - 80 & this.sprite.body.y < this.waveHeight & this.sprite.body.velocity.y > 0) {
       // if rotation isn't facing more or less straight down
-      console.log(this.spin);
       if (this.spin < 210 | this.spin > 330) {
         this.wipeout();
       } else if (this.sprite.body.x < this.waveDepth) {
@@ -130,7 +129,6 @@ class Surfer {
         this.text.destroy();
       }
     }
-    console.log(this.spinning);
     if (this.spinning > 4 | this.spinning < -4) {
       this.celebrate(40);
     }
@@ -154,7 +152,6 @@ class Surfer {
     this.speed *= 0.99;
     let angle = this.spin * Math.PI / 180;
     this.sprite.setVelocityX((this.speed * Math.cos(angle))-this.waveSpeed*(this.sprite.body.x+this.sprite.body.y));
-    //console.log(this.sprite.body.velocity.x)
     this.sprite.setVelocityY(-this.speed * Math.sin(angle));
   }
 

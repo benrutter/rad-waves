@@ -6,19 +6,21 @@ class GameScene extends Phaser.Scene {
 	preload() {
 		this.load.image('wave', './assets/sprites/wave.png');
 		this.load.image('spray', 'assets/particles/white.png');
-		this.load.image('skull', '/assets/sprites/skull.png');
+		this.load.spritesheet('skull', './assets/sprites/skull.png', { frameWidth: 10, frameHeight: 10});
 		this.load.spritesheet('surfer', './assets/sprites/surfer.png', { frameWidth: 15, frameHeight: 15 });
 		this.load.spritesheet('coin', './assets/sprites/coin.png', { frameWidth: 10, frameHeight: 10});
 	}
 
 	create() {
 
+		gameState.running = true;
+
 		this.anims.create({
 			key: 'spin',
 			frames: this.anims.generateFrameNumbers('coin', { start: 0, end: 4}),
 			frameRate: 10,
 			repeat: -1,
-		  })
+		});
 
 		gameState.wave = new Wave(this, 'wave', 'spray');
 		this.physics.world.setBounds(0, 0, game.config.width*3, gameState.wave.waveHeight + gameState.wave.waveDepth + gameState.wave.waveBottom);
@@ -31,7 +33,7 @@ class GameScene extends Phaser.Scene {
 		const makeSkull = () => {
 			gameState.skulls.create(5000, Math.random() * (gameState.wave.waveDepth + gameState.wave.waveBottom) + gameState.wave.waveHeight, 'skull')
             	.setVelocityX(-800)
-            	.setScale(3);
+            	.setScale(3)
 		}
 		this.time.addEvent({
             delay: 450,
@@ -46,7 +48,7 @@ class GameScene extends Phaser.Scene {
 			gameState.coins.create(5000, Math.random() * (gameState.wave.waveDepth + gameState.wave.waveBottom) + gameState.wave.waveHeight, 'coin')
             	.setVelocityX(-800)
             	.setScale(3)
-				.anims.play('spin', true);
+							.anims.play('spin', true);
 		}
 		this.time.addEvent({
             delay: 450,
@@ -67,11 +69,21 @@ class GameScene extends Phaser.Scene {
 	update() {
 
 		if (gameState.player.wipedout) {
-			this.add.text(gameState.player.sprite.body.x, gameState.player.sprite.body.y, `That wave was ${gameState.player.score}% rad \npress space to start again!`, { fontSize: '40px', fill: '#FF7276' }).setOrigin(0.5);
 
-			this.input.keyboard.on('keyup-SPACE', () => {
-				this.scene.restart();
-			});
+			if (gameState.running) {
+				let textX = Math.max(gameState.player.sprite.body.x, 300);
+				let textY = gameState.player.sprite.body.y + 100;
+				const adjectives = ['rad', 'sweet', 'awesome', 'nice', 'bodacious', 'crazy', 'sick', 'swell'];
+		    let adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+				let text = `${adjective}!\n${gameState.player.score} points\npress space to start again!`
+				this.add.text(textX + 3, textY + 3, text, { fontSize: '20px', fill: '#000000', fontFamily: 'CustomFont', backgroundColor: '#202020'}).setOrigin(0.5);
+				this.add.text(textX, textY, text, { fontSize: '20px', fill: '#FF7276', fontFamily: 'CustomFont' }).setOrigin(0.5);
+
+				this.input.keyboard.on('keyup-SPACE', () => {
+					this.scene.restart();
+				});
+				gameState.running = false;
+			}
 
 		} else {
 				gameState.player.update();
@@ -96,7 +108,7 @@ class GameScene extends Phaser.Scene {
 							item.body.x > gameState.player.sprite.body.x &
 							item.body.y < gameState.player.sprite.body.y + 50 &
 							item.body.y > gameState.player.sprite.body.y) {
-						gameState.player.celebrate(50);
+						gameState.player.celebrate(50, 'coin');
 						item.destroy();
 					}
 				});

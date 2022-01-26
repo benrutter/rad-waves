@@ -24,6 +24,7 @@ class Surfer {
     this.wipeodut = false;
     this.celebrateCounter = 0;
     this.score = 0;
+    this.adjective = 'rad';
     this.createAnims();
     this.setControls();
   }
@@ -43,6 +44,11 @@ class Surfer {
       frameRate: 5,
       repeat: 0,
     })
+  }
+
+  setAdjective() {
+    const adjectives = ['rad', 'sweet', 'awesome', 'nice', 'bodacious', 'crazy', 'sick', 'swell'];
+    this.adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   }
 
   wipeout() {
@@ -82,12 +88,20 @@ class Surfer {
     });
   }
 
-  celebrate(points) {
-    if (this.celebrateCounter > 40) {
-      this.text = this.context.add.text(gameState.player.sprite.body.x, gameState.player.sprite.body.y, 'Rad!', { fontSize: '30px', fill: '#FF7276' }).setOrigin(0.5);
-      this.celebrateCounter = 0;
-      this.score += points;
+  celebrate(points, thing) {
+    if (this.textOne) {
+      this.textOne.destroy();
+      this.textTwo.destroy();
     }
+    if (this.celebrateCounter >  5) {
+      this.celebrateCounter = 0;
+      this.setAdjective();
+    }
+
+    this.textOne = this.context.add.text(gameState.player.sprite.body.x + 3, gameState.player.sprite.body.y + 3, this.adjective + ' ' + thing, { fontSize: '20px', fill: '#000000', fontFamily: 'CustomFont' }).setOrigin(0.5);
+    this.textTwo = this.context.add.text(gameState.player.sprite.body.x, gameState.player.sprite.body.y, this.adjective + ' ' + thing, { fontSize: '20px', fill: '#FF7276', fontFamily: 'CustomFont' }).setOrigin(0.5);
+    this.celebrateCounter = 0;
+    this.score += points;
   }
 
   draw() {
@@ -117,20 +131,27 @@ class Surfer {
       } else if (this.sprite.body.x < this.waveDepth) {
         this.wipeout();
       } else {
-        this.celebrate(100);
+        this.celebrate(100, 'air');
       }
+    }
+    // check if in "dead zone"
+    if (this.sprite.body.y > this.waveHeight & this.sprite.body.x < 200) {
+      this.wipeout();
+    } else if (this.sprite.body.y > this.waveHeight & this.sprite.body.x < this.waveDepth) {
+      this.celebrate(50, 'barrel');
     }
     if (!this.wipedout) {
       this.updateSprite();
     }
 
-    if (this.celebrateCounter > 30 & this.celebrateCounter < 40) {
-      if (this.text) {
-        this.text.destroy();
+    if (this.celebrateCounter > 10 & this.celebrateCounter < 20) {
+      if (this.textOne) {
+        this.textOne.destroy();
+        this.textTwo.destroy();
       }
     }
-    if (this.spinning > 4 | this.spinning < -4) {
-      this.celebrate(40);
+    if (this.spinning > 4.7 | this.spinning < -4.7) {
+      this.celebrate(40, 'spin');
     }
   }
 
